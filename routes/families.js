@@ -75,26 +75,29 @@ router.post("/add-member/:familyId", async (req, res, next) => {
 router.post("/join-other-family/:userId", async (req, res, next) => {
   const userId = req.params.userId;
   const { newFamilyId } = req.body;
-  const currentUserFamily = await Family.findOneAndUpdate(
-    { users: { $in: userId } },
-    { $pull: { users: new ObjectId(userId)} }
-  );
-  console.log(currentUserFamily, "OLD FAMILY WIHTOUT THIS USER", userId);
-  const updatedNewFamily = await Family.findOneAndUpdate(
-    { _id: newFamilyId },
-    { $addToSet: { users: new ObjectId(userId) } },
-    { new: true, upsert: true }
-  );
-  console.log("NEW FAMILY", updatedNewFamily);
-  res.json(currentUserFamily);
-
+  try {
+    const currentUserFamily = await Family.findOneAndUpdate(
+      { users: { $in: userId } },
+      { $pull: { users: new ObjectId(userId) } }
+    );
+    console.log(currentUserFamily, "OLD FAMILY WIHTOUT THIS USER", userId);
+    const updatedNewFamily = await Family.findOneAndUpdate(
+      { _id: newFamilyId },
+      { $addToSet: { users: new ObjectId(userId) } },
+      { new: true, upsert: true }
+    );
+    console.log("NEW FAMILY", updatedNewFamily);
+    res.json(currentUserFamily);
+  } catch (error) {
+    res.status(500).json({ message: "Invalid Family Code" });
+  }
   //find newfammily and insert user
 });
 
 //GETS FAMILY SNAPSHOTS, LOCATIONS, AND FAMILY DETAILS
 router.get("/user-family-info/:userId", async (req, res, next) => {
   try {
-    console.log("GETTING FAMILY FROM USER ID❤️");
+    console.log("GETTING FAMILY FROM USER ID❤️", req.params.userId);
     const foundFamily = await Family.findOne({ users: req.params.userId })
       .populate({ path: "users", populate: { path: "locations" } })
       .populate("address")
@@ -102,6 +105,7 @@ router.get("/user-family-info/:userId", async (req, res, next) => {
     //GET FAMILY LOCATIONS GIVEN LIST OF USERS WITH POPULATED LOCATIONS
     console.log("got family", foundFamily);
     let familyLocations = [];
+    
     for (user of foundFamily.users) {
       if (user.locations) {
         familyLocations = familyLocations.concat(user.locations);
