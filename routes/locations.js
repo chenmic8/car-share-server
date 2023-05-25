@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 const Location = require("../models/Location");
 const Family = require("../models/Family");
-
+const User = require("../models/User");
 
 router.get("/all-locations", async (req, res, next) => {
   console.log("GETTING LOCATIONS");
@@ -13,7 +13,6 @@ router.get("/all-locations", async (req, res, next) => {
     res.status(404).json({ message: error });
   }
 });
-
 
 router.get("/family-locations/:familyId", async (req, res, next) => {
   console.log("GETTING LOCATIONS");
@@ -48,6 +47,20 @@ router.post("/create", async (req, res, next) => {
   try {
     // console.log('CREATE LOCATION REQ BODY: ', req.body);
     const createdLocation = await Location.create(req.body);
+    res.json(createdLocation);
+  } catch (error) {
+    res.status(404).json({ message: error });
+  }
+});
+
+router.post("/create/:userId", async (req, res, next) => {
+  try {
+    const createdLocation = await Location.create(req.body);
+    await User.findByIdAndUpdate(
+      req.params.userId,
+      { $addToSet: { locations: createdLocation._id } },
+      { new: true, upsert: true }
+    );
     res.json(createdLocation);
   } catch (error) {
     res.status(404).json({ message: error });

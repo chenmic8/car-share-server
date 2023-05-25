@@ -9,8 +9,14 @@ const locationSchema = new Schema(
     placeFormatted: { type: String },
     fullAddress: { type: String },
     coordinates: {
-      latitude: { type: mongoose.Types.Decimal128, required: true },
-      longitude: { type: mongoose.Types.Decimal128, required: true },
+      latitude: {
+        type: mongoose.Types.Decimal128,
+        //  required: true
+      },
+      longitude: {
+        type: mongoose.Types.Decimal128,
+        //  required: true
+      },
     },
   },
   { timestamps: true, timeseries: true }
