@@ -9,7 +9,7 @@ const User = require("../models/User");
 const oauth2Client = new google.auth.OAuth2(
   process.env.CLIENT_ID,
   process.env.CLIENT_SECRET,
-  "http://localhost:3000"
+  "https://master--euphonious-dango-3ae580.netlify.app/"
 );
 
 router.get("/all-events", async (req, res, next) => {
