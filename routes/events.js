@@ -15,9 +15,9 @@ const oauth2Client = new google.auth.OAuth2(
 router.get("/all-events", async (req, res, next) => {
   try {
     const foundEvents = await Event.find()
-      .populate("endLocation")
-      .populate("startLocation")
-      .populate("location");
+      // .populate("endLocation")
+      // .populate("startLocation")
+      // .populate("location");
     res.json(foundEvents);
   } catch (error) {
     res.status(404).json({ message: error });
