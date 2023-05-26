@@ -37,21 +37,43 @@ router.get("/details/:userId", async (req, res, next) => {
 });
 
 //need password to change user
+// router.post("/update/:userId", async (req, res, next) => {
+//   console.log("UPDATING USER");
+//   const { currentPassword } = req.body;
+
+//   //if password matchs
+//   try {
+//     console.log('COMPARING PASSWORDS')
+//     const foundUser = await User.findById(req.params.userId);
+//     const passwordCorrect = bcrypt.compareSync(
+//       currentPassword,
+//       foundUser.password
+//     );
+//     if (!passwordCorrect) {
+//       res.status(401).json({ message: "Incorrect password" });
+//       return;
+//     }
+//     const updatedUser = await User.findByIdAndUpdate(
+//       req.params.userId,
+//       req.body,
+//       {
+//         new: true,
+//       }
+//     );
+//     console.log("UPDATED USER: ", updatedUser);
+//     res.json(updatedUser);
+//   } catch (error) {
+//     res
+//       .status(404)
+//       .json({ message: "A user with that email may already exist" });
+//   }
+// });
+
 router.post("/update/:userId", async (req, res, next) => {
   console.log("UPDATING USER");
-  const { currentPassword } = req.body;
 
   //if password matchs
   try {
-    const foundUser = await User.findById(req.params.userId);
-    const passwordCorrect = bcrypt.compareSync(
-      currentPassword,
-      foundUser.password
-    );
-    if (!passwordCorrect) {
-      res.status(401).json({ message: "Incorrect password" });
-      return;
-    }
     const updatedUser = await User.findByIdAndUpdate(
       req.params.userId,
       req.body,
